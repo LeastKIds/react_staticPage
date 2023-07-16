@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  react:
+    build:
+      context: Dockerfile
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/root/app
+    container_name: react_container_test
+    tty: true
+    command: sleep infinity
