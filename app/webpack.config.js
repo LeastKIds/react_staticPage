@@ -5,8 +5,9 @@ module.exports = {
     mode: 'production',
     entry: './src/index.js',
     output: {
-        path: path.resolve(__dirname, 'src'),
-        filename: './assets/js/index.js',
+        path: path.resolve(__dirname, 'src/output'),
+        filename: 'assets/js/index.js',
+        clean: true,
     },
     module: {
         rules: [
@@ -32,11 +33,29 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /\.(png|jpe?g|gif|svg)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name].[ext]', // 파일의 원래 경로와 이름을 유지합니다.
+                            context: path.resolve(__dirname, 'src/'), // 'src/'를 기본 경로로 설정합니다.
+                            outputPath: (url, resourcePath, context) => {
+                                // 프로젝트 내의 상대 경로를 유지하기 위한 함수
+                                const relativePath = path.relative(context, resourcePath);
+                                return `assets/${relativePath}`; // 최종 경로를 'output/'으로 설정합니다.
+                            },
+                        },
+                    },
+                ],
+            },
         ],
     },
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/index.html', // 프로젝트의 HTML 파일 경로
+            filename: '../output/index.html'
         }),
     ],
 
